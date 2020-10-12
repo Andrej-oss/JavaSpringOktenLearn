@@ -18,7 +18,7 @@ import java.util.Set;
 public class Director {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     @NotBlank
     private String name;
     @JsonFormat(pattern = "yyyy-MM-dd")
