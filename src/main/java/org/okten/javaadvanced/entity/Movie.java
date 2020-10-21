@@ -17,15 +17,13 @@ import java.lang.annotation.Documented;
 @NoArgsConstructor
 @Data
 @Entity
-@NamedQuery(name = "MovieDAO.findByTittle",
-        query = "select m from Movie m where m.tittle = :tittle")
 @JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler", "fieldHandler"})
 public class Movie {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(nullable = false)
-    @UniqMovieTittle
+    //@UniqMovieTittle
     @NotBlank
     private String tittle;
    // @JsonIgnore
@@ -33,6 +31,7 @@ public class Movie {
     @Max(200)
     private int duration;
 
-    @ManyToOne(targetEntity = Director.class, fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JsonIgnore
     private Director director;
 }

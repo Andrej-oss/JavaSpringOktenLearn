@@ -21,13 +21,25 @@ public class DirectorController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Director saveDirector(@RequestBody Director director){
+    public Director saveDirector(@RequestBody Director director) {
         directorService.insertDirector(director);
         log.info("Handling Director /Post with requestBody" + director);
         return director;
     }
+
     @GetMapping
-    public List<Director> getAllDirectors(){
+    public List<Director> getAllDirectors() {
         return directorService.getDirectors();
     }
+
+    @GetMapping(path = "{name}")
+    public Director getDirectorByName(@PathVariable String name) {
+        return directorService.getDirectorByName(name);
+    }
+
+   /* @GetMapping(path = "{id}")
+    public Director getDirector(@PathVariable int id) {
+        return directorService.getDirector(id);
+    }*/
+
 }

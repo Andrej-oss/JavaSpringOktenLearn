@@ -1,14 +1,14 @@
 package org.okten.javaadvanced.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.okten.javaadvanced.dao.MovieDAO;
 import org.okten.javaadvanced.dto.MovieDTO;
+import org.okten.javaadvanced.dto.MoviePageDTO;
 import org.okten.javaadvanced.entity.Movie;
 import org.okten.javaadvanced.service.IMovieService;
 import org.okten.javaadvanced.validator.MovieValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -19,7 +19,7 @@ import java.util.List;
 @Slf4j
 public class MovieController {
     private IMovieService movieService;
-    private MovieValidator movieValidator;
+    //private MovieValidator movieValidator;
 //private List<Movie> movies = new ArrayList<>();
 
 
@@ -28,20 +28,26 @@ public class MovieController {
             movies.add(new Movie(2, "Star wars 2", 123));
         }*/
     @Autowired
-    public MovieController(IMovieService movieService, MovieValidator movieValidator){
-       this.movieService =movieService;
-       this.movieValidator = movieValidator;
+    public MovieController(IMovieService movieService){
+       this.movieService = movieService;
+      // this.movieValidator = movieValidator;
    }
     @GetMapping
-    public List<Movie> getMovies(){
-        List<Movie> all = movieService.getAllMovies();
-        System.out.println(all);
+    public MoviePageDTO getMovies(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size){
+        PageRequest pageRequest = PageRequest.of(page, size);
+        final  MoviePageDTO all = movieService.getAllMovies(pageRequest);
         return all;
     }
 
     @GetMapping("/{id}")
     public Movie findMovie(@PathVariable int id){
         return movieService.getMovie(id);
+    }
+
+    @GetMapping("/name/{name}")
+    public List<Movie> getMovies(@PathVariable String name) {
+        return movieService.getMoviesByDirectorName(name);
+
     }
 
     @PostMapping(value = "/directors/{directorId}")

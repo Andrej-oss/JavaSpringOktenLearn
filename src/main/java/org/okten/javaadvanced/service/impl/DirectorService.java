@@ -41,4 +41,9 @@ public class DirectorService implements IDirectorService {
     public void deleteDirector(int id) {
        directorDAO.deleteById(id);
     }
+
+    @Override
+    public Director getDirectorByName(String name) {
+       return directorDAO.findDirectorByName(name);
+    }
 }

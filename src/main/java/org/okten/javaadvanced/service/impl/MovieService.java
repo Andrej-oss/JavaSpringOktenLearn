@@ -6,11 +6,14 @@ import lombok.NoArgsConstructor;
 import org.okten.javaadvanced.dao.DirectorDAO;
 import org.okten.javaadvanced.dao.MovieDAO;
 import org.okten.javaadvanced.dto.MovieDTO;
+import org.okten.javaadvanced.dto.MoviePageDTO;
 import org.okten.javaadvanced.entity.Director;
 import org.okten.javaadvanced.entity.Movie;
 import org.okten.javaadvanced.exceptions.CapitalLetterException;
 import org.okten.javaadvanced.service.IMovieService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +21,7 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 @JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler", "fieldHandler"})
+
 
 public class MovieService implements IMovieService {
 
@@ -34,13 +38,19 @@ public class MovieService implements IMovieService {
         }
         final Director director = directorDAO.getOne(directorId);
         movie.setDirector(director);
-        movieDAO.save(movie);
+        movie = movieDAO.save(movie);
         return new MovieDTO(movie.getId(), movie.getTittle(), movie.getDuration(), director.getName());
     }
 
     @Override
-    public List<Movie> getAllMovies() {
-        return movieDAO.findAll();
+    public List<Movie> getMoviesByDirectorName(String name) {
+        return movieDAO.findByDirectorName(name);
+    }
+
+    @Override
+    public MoviePageDTO getAllMovies(PageRequest pageRequest) {
+        Page<Movie> all = movieDAO.findAll(pageRequest);
+        return new MoviePageDTO(all.getContent(), all.getSize(), all.getNumber(), all.getTotalPages (), (int) all.getTotalElements(), all.isEmpty());
     }
 
     @Override
