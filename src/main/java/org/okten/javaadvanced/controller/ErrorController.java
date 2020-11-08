@@ -2,6 +2,7 @@ package org.okten.javaadvanced.controller;
 
 
 import org.okten.javaadvanced.exceptions.CapitalLetterException;
+import org.okten.javaadvanced.exceptions.NoImageException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -32,5 +33,11 @@ Logger logger = LoggerFactory.getLogger(ErrorController.class);
     public ErrorResponse handleCapitalLetterException(CapitalLetterException e){
         logger.warn("CapitalLetterException" + e.getMessage());
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "input capital letter error", e.getMessage());
+    }
+    @ExceptionHandler(value = {NoImageException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleNoImageException(NoImageException e){
+        logger.error("Handling noImageException");
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "must be Image extension", e.getMessage());
     }
 }

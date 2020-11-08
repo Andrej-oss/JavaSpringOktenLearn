@@ -9,7 +9,9 @@ import org.okten.javaadvanced.validator.MovieValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -50,11 +52,17 @@ public class MovieController {
 
     }
 
-    @PostMapping(value = "/directors/{directorId}")
+    @GetMapping(value = "/image/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public byte[] getImageByMoviesId(@PathVariable int id){
+        return movieService.getMoviesImage(id);
+    }
+
+    @PostMapping(value = "/directors/{directorId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public MovieDTO postMovies(@RequestBody @Valid Movie movie, @PathVariable int directorId){
+    public MovieDTO postMovies(@ModelAttribute @Valid Movie movie,
+                               @PathVariable int directorId, @RequestParam(required = false) MultipartFile file){
         log.info("handling Post /movie from with object" + movie);
-        return movieService.insertMovie(movie, directorId);
+        return movieService.insertMovie(movie, file,  directorId);
     }
 
     @PutMapping("/{id}")

@@ -23,13 +23,18 @@ public class Movie {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(nullable = false)
+
     //@UniqMovieTittle
     @NotBlank
     private String tittle;
+
    // @JsonIgnore
     @Positive
     @Max(200)
     private int duration;
+
+    @Lob
+    private byte[] data;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JsonIgnore
